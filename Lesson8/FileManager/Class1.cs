@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 public class Class1
 {
@@ -25,15 +26,15 @@ public class Class1
         for (int j = 1; j < H - 1; j++)
         {
             Console.SetCursorPosition(0, j);
-            Console.Write("|");
+            Console.Write("║");
             Console.SetCursorPosition(W - 1, j);
-            Console.Write('|');
-            Console.SetCursorPosition((W - 1) / 2, j);
-            Console.Write('|');
-            Console.SetCursorPosition((W - 1) / 4, j);
-            Console.Write('|');
-            Console.SetCursorPosition((W - 1) / 4 * 3, j);
             Console.Write('║');
+            Console.SetCursorPosition((W - 1) / 2, j);
+            Console.Write('│');
+            Console.SetCursorPosition((W - 1) / 4, j);
+            Console.Write('│');
+            Console.SetCursorPosition((W - 1) / 4 * 3, j);
+            Console.Write('│');
         }
         Console.SetCursorPosition(0, 0);
         Console.Write("╔");
@@ -45,6 +46,29 @@ public class Class1
         Console.Write("╝");
 
 
+    }
+
+    public static void PrintCatalog()
+    {
+        int H = Console.WindowHeight;
+        int W = Console.WindowWidth;
+        var dir = Directory.GetDirectories(@"C:\");
+        for (int i = 0; i < dir.Length; ++i)
+        {
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.SetCursorPosition(2, i+2);
+            Console.WriteLine(dir[i]);
+        }
+    }
+    public static void PrintCurrentDir()
+    {
+        var cur_dir = Directory.GetCurrentDirectory() + ' ';
+        Console.BackgroundColor = ConsoleColor.DarkGray;
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.SetCursorPosition(2, 0);
+        Console.WriteLine(cur_dir);
+        
     }
     public Class1()
 	{
