@@ -1,76 +1,186 @@
 ﻿using System;
 using System.IO;
 
+
+public class Direct
+{
+    public string current { get; set; }
+    public int pages { get; set; }
+}
+
 public class Class1
 {
-	public static void print()
-	{
-		Console.WriteLine("Hello");
-	}
+    public static void Command(Direct dir)
+    {
+        Class1.Border();
+        Class1.PrintCurrentDir(dir);
+        Class1.PrintCatalog(dir);
+        Console.SetCursorPosition(0, 25);
+        string com;
+        Console.Write(">>> ");
+        com = Console.ReadLine();
+        if (com.StartsWith("cd"))
+        {
+            ChangeDir(dir, com);
+            dir.pages = 0;
+        }
+        if (com == "exit") return;
+        if (com == "next") 
+        { 
+            if (Directory.GetDirectories(dir.current).Length - 20 > dir.pages * 20) dir.pages++;
+        }
+        if (com == "prev")
+        {
+            if (dir.pages > 0) dir.pages--;
+        }
+
+        Command(dir);
+    }
+    public static string ShortDir(string st, int len)
+    {
+        string[] str;
+        str = st.Split("\\");
+        int N = str.Length;
+        string s1 = "", s2 = "";
+        int l = 0;
+        if (str[N - 1].Length + 8 > len){
+            s1 = @"C:\...\" + str[N - 1].Substring(0, len) + '~';
+            return s1;
+        }
+        for (int i = 0; i < N / 2; i++)
+        {
+            if (i == N - 1 - i)
+            {
+                break;
+            }
+            s2 = "\\" + str[N - 1 - i] + s2;
+            l += s2.Length;
+            if (l > len)
+            {
+                return s1 + "..." + s2;
+            }
+            s1 += str[i]+ "\\";
+            l += s1.Length;
+            if (l > len)
+            {
+                return s1 + "..." + s2;
+            }
+        }
+        return s1.Substring(0,s1.Length-1) + s2;
+    } 
+
+    public static string ShortCatalog(string st, int len)
+    {
+        string[] str;
+        str = st.Split('\\');
+        int N = str.Length;
+        string s1 = str[N-1];
+        int l = 0;
+        if (s1.Length > len)
+        {
+            s1 = str[N - 1].Substring(0, len-1) + "~";
+            return s1;
+        }
+        return s1;
+    }
+
+    public static void ChangeDir(Direct dir, string com)
+    {
+        string cur_dir;
+        cur_dir = com.Substring(3);
+        if (Directory.Exists(cur_dir))
+            dir.current = com.Substring(3);
+        else if (Directory.Exists(dir.current + @"\" + cur_dir))
+            dir.current = dir.current + @"\" + cur_dir;
+        else if (Directory.Exists(@"C:\" + cur_dir))
+            dir.current = @"C:\" + cur_dir;
+
+    }
+    public static void Print(string s,
+                             int x = 0,
+                             int y = 0,
+                             ConsoleColor bg = ConsoleColor.Black,
+                             ConsoleColor fg = ConsoleColor.DarkYellow)   
+    {
+        Console.ForegroundColor = fg;
+        Console.BackgroundColor = bg;
+        Console.SetCursorPosition(x, y);
+        Console.Write(s);
+    }
     
     public static void Border()
     //рисуем границы
     {
-        Console.BackgroundColor = ConsoleColor.Gray;
+        Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
         int H = Console.WindowHeight;
         int W = Console.WindowWidth;
-        for (int i = 1; i < W - 1; i++)
+        for (int i = 0; i < W - 1; i++)
         {
-            Console.SetCursorPosition(i, 0);
-            Console.Write("═");
-            Console.SetCursorPosition(i, H - 1);
-            Console.Write('═');
+            Print("═", i, 1);
+            //Console.SetCursorPosition(i, 0);
+            //Console.Write("═");
+            Print("═", i, H - 7);
+            //Console.SetCursorPosition(i, H - 1);
+            //Console.Write('═');
         }
-        for (int j = 1; j < H - 1; j++)
+        for (int j = 2; j < H - 7; j++)
         {
-            Console.SetCursorPosition(0, j);
-            Console.Write("║");
-            Console.SetCursorPosition(W - 1, j);
-            Console.Write('║');
-            Console.SetCursorPosition((W - 1) / 2, j);
-            Console.Write('│');
-            Console.SetCursorPosition((W - 1) / 4, j);
-            Console.Write('│');
-            Console.SetCursorPosition((W - 1) / 4 * 3, j);
-            Console.Write('│');
+            Print("║", 0, j);
+            Print("║", W - 1, j);
+            Print("║", (W - 1) / 2, j);
+            Print("║", (W - 1) / 2 + 1, j);
+            Print("│", (W - 1) / 4, j);
+            Print("│", (W - 1) / 4 * 3 + 1, j);
         }
-        Console.SetCursorPosition(0, 0);
-        Console.Write("╔");
-        Console.SetCursorPosition(W - 1, 0);
-        Console.Write("╗");
-        Console.SetCursorPosition(0, H - 1);
-        Console.Write("╚");
-        Console.SetCursorPosition(W - 1, H - 1);
-        Console.Write("╝");
-
-
-    }
-
-    public static void PrintCatalog()
-    {
-        int H = Console.WindowHeight;
-        int W = Console.WindowWidth;
-        var dir = Directory.GetDirectories(@"C:\");
-        for (int i = 0; i < dir.Length; ++i)
-        {
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.BackgroundColor = ConsoleColor.Gray;
-            Console.SetCursorPosition(2, i+2);
-            Console.WriteLine(dir[i]);
-        }
-    }
-    public static void PrintCurrentDir()
-    {
-        var cur_dir = Directory.GetCurrentDirectory() + ' ';
-        Console.BackgroundColor = ConsoleColor.DarkGray;
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(2, 0);
-        Console.WriteLine(cur_dir);
+        Print("╔", 0, 1);
+        Print("╔", (W - 1) / 2 + 1, 1);
+        Print("╗", W - 1, 1);
+        Print("╗", (W - 1) / 2, 1);
+        Print("╚", 0, H - 7);
+        Print("╝", W - 1, H - 7);
+        Print("╚", (W - 1) / 2 + 1, H - 7);
+        Print("╝", (W - 1) / 2, H - 7);
+        //Console.SetCursorPosition(0, 0);
+        //Console.Write("╔");
+        //Console.SetCursorPosition(W - 1, 0);
+        //Console.Write("╗");
+        //Console.SetCursorPosition(0, H - 1);
+        //Console.Write("╚");
+        //Console.SetCursorPosition(W - 1, H - 1);
+        //Console.Write("╝");
         
+        Print("exit - выход    cd <каталог> - смена каталога    next - следующая страница", 1, 27, ConsoleColor.Black, ConsoleColor.White);
+        Print("prev - предыдущая страница", 1, 28, ConsoleColor.Black, ConsoleColor.White);
+
+    }
+
+    public static void PrintCatalog(Direct dir)
+    {
+        int page = dir.pages;
+        int H = Console.WindowHeight;
+        int W = Console.WindowWidth;
+        var dir1 = Directory.GetDirectories(dir.current);
+        var file1 = Directory.GetFiles(dir.current);
+        for (int i = page * 20; i < Math.Min(dir1.Length, (page + 1) * 20); ++i)
+        {
+            Print(ShortCatalog(dir1[i], 15),1, i % 20 +2, ConsoleColor.Black, ConsoleColor.DarkYellow);
+        }
+        for (int i = 0; i < Math.Min(20, file1.Length); i++)
+        {
+            Print(ShortCatalog(file1[i], 15), W / 4 + 1, i % 20 + 2, ConsoleColor.Black, ConsoleColor.DarkYellow);
+        }
+        if (dir1.Length - (page + 1) * 20 > 0)
+            Print("...", 1, 22, ConsoleColor.Black, ConsoleColor.DarkYellow);
+    }
+    public static void PrintCurrentDir(Direct dir)
+    {
+        
+        Print(ShortDir(dir.current, 60), 0, 0, ConsoleColor.Black, ConsoleColor.Red);
     }
     public Class1()
 	{
 	}
+
 }
