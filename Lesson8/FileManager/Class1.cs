@@ -17,7 +17,7 @@ public class Class1
         Class1.PrintCatalog(dir);
         Console.SetCursorPosition(0, 25);
         string com;
-        Console.Write(">>> ");
+        Console.Write(dir.current + ">>> ");
         com = Console.ReadLine();
         if (com.StartsWith("cd"))
         {
@@ -43,10 +43,15 @@ public class Class1
         int N = str.Length;
         string s1 = "", s2 = "";
         int l = 0;
+        if (st.Length < len)
+        {
+            return st;
+        }
         if (str[N - 1].Length + 8 > len){
             s1 = @"C:\...\" + str[N - 1].Substring(0, len) + '~';
             return s1;
         }
+        
         for (int i = 0; i < N / 2; i++)
         {
             if (i == N - 1 - i)
@@ -55,7 +60,7 @@ public class Class1
             }
             s2 = "\\" + str[N - 1 - i] + s2;
             l += s2.Length;
-            if (l > len)
+            if (l >= len)
             {
                 return s1 + "..." + s2;
             }
@@ -177,7 +182,7 @@ public class Class1
     public static void PrintCurrentDir(Direct dir)
     {
         
-        Print(ShortDir(dir.current, 60), 0, 0, ConsoleColor.Black, ConsoleColor.Red);
+        Print(ShortDir(dir.current, 40), 0, 0, ConsoleColor.Black, ConsoleColor.Red);
     }
     public Class1()
 	{
