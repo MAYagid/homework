@@ -34,6 +34,11 @@ public class Class1
             if (dir.pages > 0) dir.pages--;
         }
 
+        if (com.StartsWith("del"))
+        {
+            DelDir(dir);
+        }
+
         Command(dir);
     }
     public static string ShortDir(string st, int len)
@@ -74,6 +79,7 @@ public class Class1
         return s1.Substring(0,s1.Length-1) + s2;
     } 
 
+
     public static string ShortCatalog(string st, int len)
     {
         string[] str;
@@ -100,6 +106,25 @@ public class Class1
         else if (Directory.Exists(@"C:\" + cur_dir))
             dir.current = @"C:\" + cur_dir;
 
+    }
+
+    public static void DelDir(Direct dir)
+    {
+        string ans;
+        if (Directory.GetDirectories(dir.current).Length == 0 || Directory.GetFiles(dir.current).Length == 0)
+        {
+            Console.Write("Каталог не пустой. Удалить каталог и его содержимое? (y/n)");
+            while (true)
+            {
+                ans = Console.ReadLine();
+                if (ans == "y" || ans == "n") break;
+            }
+            if (ans == "y")
+            {
+                Directory.Delete(dir.current, true);
+                ChangeDir(dir, @"cd C:\");
+            }
+        }
     }
     public static void Print(string s,
                              int x = 0,
