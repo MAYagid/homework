@@ -182,7 +182,7 @@ public class Class1
         //Console.Write("╝");
         
         Print("exit - выход    cd <каталог> - смена каталога    next - следующая страница", 1, 27, ConsoleColor.Black, ConsoleColor.White);
-        Print("prev - предыдущая страница", 1, 28, ConsoleColor.Black, ConsoleColor.White);
+        Print("prev - предыдущая страница   del - удалить текущий каталог", 1, 28, ConsoleColor.Black, ConsoleColor.White);
 
     }
 
